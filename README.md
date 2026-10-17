@@ -2,6 +2,8 @@
 
 [![Build Windows portable](https://github.com/yanzhibuzhuoyv/dsh-codex-studio/actions/workflows/build-win.yml/badge.svg)](https://github.com/yanzhibuzhuoyv/dsh-codex-studio/actions/workflows/build-win.yml)
 
+Prebuilt Windows x64 portable build: [Releases](https://github.com/yanzhibuzhuoyv/dsh-codex-studio/releases/latest).
+
 A small Electron desktop shell for a DSH/Codex collaboration loop. It runs the real
 `codex exec --json` CLI, resumes a thread with `codex exec resume --json <thread-id> -`,
 and turns actual `dsh` MCP tool events into two views:
