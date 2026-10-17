@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-visible/
+dist-roundtrip/
+*.log
+
+# Local task handoff and verification evidence (machine-specific)
+.codex/

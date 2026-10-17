@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSH x Codex Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="DSH x Codex Studio">
+        <span class="brand-mark">DSH</span>
+        <span class="brand-cross">×</span>
+        <span class="brand-name">CODEX STUDIO</span>
+      </div>
+
+      <div class="topbar-meta">
+        <span id="sessionPill" class="session-pill" title="No Codex thread yet">New session</span>
+        <span id="statusPill" class="status-pill" data-phase="idle">
+          <span class="status-dot"></span>
+          <span id="statusText">Idle</span>
+        </span>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="newSessionBtn" class="button subtle" type="button" title="Forget the current Codex thread and clear this view">
+          New session
+        </button>
+        <button id="stopBtn" class="button danger" type="button" disabled>
+          Stop
+        </button>
+      </div>
+    </header>
+
+    <section class="workspacebar" aria-label="Run configuration">
+      <label class="field-label" for="workspaceInput">Workspace</label>
+      <input id="workspaceInput" class="workspace-input" type="text" spellcheck="false" autocomplete="off"
+             placeholder="C:\path\to\your\project">
+      <button id="browseBtn" class="button subtle" type="button">Browse…</button>
+
+      <div class="mode-control">
+        <label class="mode-switch" for="dshToggle" title="Controls the instruction sent to Codex for the next run">
+          <input id="dshToggle" type="checkbox" role="switch" aria-checked="false">
+          <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+          <span class="mode-label">DSH collaboration</span>
+        </label>
+        <span id="dshModeState" class="mode-state off">OFF</span>
+      </div>
+    </section>
+
+    <div id="notice" class="notice" role="alert" hidden>
+      <span id="noticeText"></span>
+      <button id="noticeClose" class="notice-close" type="button" aria-label="Dismiss message">×</button>
+    </div>
+
+    <main class="studio-grid">
+      <section class="panel dsh-panel" aria-labelledby="dshPanelTitle">
+        <header class="panel-header">
+          <div>
+            <h2 id="dshPanelTitle">DSH 运行页</h2>
+            <p>真实 DSH MCP 边界数据 · 待机时等待 Codex JSONL 事件</p>
+          </div>
+          <span id="dshCount" class="counter" title="MCP boundary entries">0</span>
+        </header>
+        <div id="dshLog" class="panel-scroll log-column" aria-live="polite">
+          <div class="empty-state" id="dshEmpty">
+            <span class="empty-kicker">DSH 运行页 · 待机</span>
+            <span class="empty-glyph">↔</span>
+            <strong>等待真实 DSH 运行数据</strong>
+            <p>当前没有 dsh MCP 边界事件。仅当 Codex 发出 server 为 <code>dsh</code> 的 <code>mcp_tool_call</code> 时，这里才显示请求与结果，不生成模拟数据。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel relay-panel" aria-labelledby="relayPanelTitle">
+        <header class="panel-header">
+          <div>
+            <h2 id="relayPanelTitle">Relay 会话</h2>
+            <p>左泡 DSH → Codex · 右泡 Codex → DSH · 仅展示真实 MCP 载荷</p>
+          </div>
+          <div class="legend" aria-label="Relay direction legend">
+            <span class="legend-item"><i class="legend-dot incoming"></i>DSH</span>
+            <span class="legend-item"><i class="legend-dot outgoing"></i>Codex</span>
+          </div>
+        </header>
+
+        <div id="relayFeed" class="relay-feed" aria-live="polite">
+          <div class="empty-state relay-empty" id="relayEmpty">
+            <span class="empty-kicker">Relay 会话 · 待机</span>
+            <span class="empty-glyph">⇄</span>
+            <strong>等待真实 MCP relay</strong>
+            <p>左侧显示 DSH → Codex，右侧显示 Codex → DSH。只有真实的 dsh MCP 请求与结果会成为气泡，任务文本本身不会伪装成 DSH 气泡。</p>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-heading">
+            <label for="taskInput">Task for Codex</label>
+            <span class="kbd-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to start</span>
+          </div>
+          <textarea id="taskInput" class="task-input" rows="4" spellcheck="true"
+                    placeholder="Describe the work Codex should perform in the selected workspace…"></textarea>
+          <div class="composer-footer">
+            <span id="modeHint" class="mode-hint off">DSH collaboration is OFF: Codex is instructed not to call dsh MCP.</span>
+            <button id="startBtn" class="button primary" type="button" disabled>Start run</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel codex-panel" aria-labelledby="codexPanelTitle">
+        <header class="panel-header">
+          <div>
+            <h2 id="codexPanelTitle">Codex 运行页</h2>
+            <p>真实 codex exec --json 事件流与 stderr · 不生成推理内容</p>
+          </div>
+          <span id="codexCount" class="counter" title="Codex events and stderr lines">0</span>
+        </header>
+        <div id="codexLog" class="panel-scroll log-column codex-log" aria-live="polite">
+          <div class="empty-state" id="codexEmpty">
+            <span class="empty-kicker">Codex 运行页 · 待机</span>
+            <span class="empty-glyph">⌁</span>
+            <strong>等待真实 Codex 事件</strong>
+            <p>当前没有 Codex 输出。开始运行后，这里只显示真实的 <code>codex exec --json</code> stdout 事件与 stderr，不生成模拟事件。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="statusbar">
+      <span id="footerStatus">Ready. DSH collaboration defaults to OFF.</span>
+      <span id="footerCounts" class="footer-counts">0 MCP boundary entries · 0 events</span>
+    </footer>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

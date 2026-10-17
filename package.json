@@ -1,0 +1,41 @@
+{
+  "name": "dsh-codex-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secure Electron desktop shell for DSH/Codex collaboration over the dsh MCP boundary.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win portable --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.dsh.codexstudio",
+    "productName": "DSH x Codex Studio",
+    "artifactName": "${productName}-${version}-${arch}-portable.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signExecutable": false
+    },
+    "electronDist": "node_modules/electron/dist"
+  }
+}
