@@ -34,7 +34,7 @@ Codex is allowed to use the workspace folder chosen by the user even when it is 
 ## Setup (development)
 
 ```powershell
-cd C:\Users\32202\Desktop\99999\dsh-codex-studio
+cd C:\path\to\dsh-codex-studio
 npm install
 npm start
 ```
