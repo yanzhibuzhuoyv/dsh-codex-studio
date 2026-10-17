@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Secure Electron desktop shell for DSH/Codex collaboration over the dsh MCP boundary.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanzhibuzhuoyv/dsh-codex-studio.git"
+  },
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",

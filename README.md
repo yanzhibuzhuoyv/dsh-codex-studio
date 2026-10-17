@@ -1,5 +1,7 @@
 # DSH x Codex Studio
 
+[![Build Windows portable](https://github.com/yanzhibuzhuoyv/dsh-codex-studio/actions/workflows/build-win.yml/badge.svg)](https://github.com/yanzhibuzhuoyv/dsh-codex-studio/actions/workflows/build-win.yml)
+
 A small Electron desktop shell for a DSH/Codex collaboration loop. It runs the real
 `codex exec --json` CLI, resumes a thread with `codex exec resume --json <thread-id> -`,
 and turns actual `dsh` MCP tool events into two views:
@@ -70,6 +72,10 @@ This is a single self-contained application executable that starts the Electron 
 when double-clicked; no installation is required. The first build may download
 Electron/build tooling and therefore needs network access.
 
+The same build runs on GitHub Actions (`.github/workflows/build-win.yml`) on every
+push to `main` and can be started manually with **workflow_dispatch**; the resulting
+portable `.exe` is uploaded as the `dsh-codex-studio-portable` workflow artifact.
+
 The app still resolves and runs the user's Codex CLI from `PATH` at runtime. The
 packaged app does not bundle or alter the user's Codex CLI, login, or global
 configuration. DSH collaboration also requires the user's Codex `dsh` MCP server
@@ -106,3 +112,7 @@ configuration to be present.
 - `public/` — renderer HTML, CSS, and DOM-only JavaScript.
 - `launch.cmd` — Windows development launcher that uses the locally installed Electron.
 - `package.json` — development scripts and electron-builder portable build configuration.
+
+## License
+
+[MIT](LICENSE) © 2026 yanzhibuzhuoyv
